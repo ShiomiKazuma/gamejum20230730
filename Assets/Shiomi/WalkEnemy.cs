@@ -3,9 +3,13 @@ using UnityEngine;
 public class WalkEnemy : MonoBehaviour
 {
     //追跡するプレイヤーを追加
-    [SerializeField] GameObject _player;
+    GameObject _player;
     //追跡するスピード
     [SerializeField,Range(0,100)] float _enemySpeed = 1;
+    private void Start()
+    {
+        _player = GameObject.FindGameObjectWithTag("Player");
+    }
     private void FixedUpdate()
     {
         //方向を決める
