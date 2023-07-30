@@ -14,7 +14,8 @@ public class PlayerMove : MonoBehaviour
     float _attackTimer = 0;
     Rigidbody _rb;
     GameObject _attackRange;
-    Queue<GameObject> _attackList = new Queue<GameObject>();
+    public bool _isGrounded { get; set; } = false;
+    Vector3 _initialPosition = default;
     void Start()
     {
         _animator = transform.GetChild(0).GetComponent<Animator>();
@@ -22,6 +23,7 @@ public class PlayerMove : MonoBehaviour
         _attackRange.SetActive(false);
         _rb = GetComponent<Rigidbody>();
         _attackTimer = _attackInterval + 1;
+        _initialPosition = transform.position;
     }
 
     void Update()
@@ -42,7 +44,7 @@ public class PlayerMove : MonoBehaviour
             _rb.velocity = new Vector3(local.x, _rb.velocity.y, local.z);
         }
         //キャラクターのジャンプ
-        if(Input.GetButtonDown("Jump"))
+        if(Input.GetButtonDown("Jump") && _isGrounded)
         {
             _rb.AddForce(new Vector3(0,_jumpPower,0),ForceMode.Impulse);
         }
@@ -52,12 +54,11 @@ public class PlayerMove : MonoBehaviour
             StartCoroutine(Attack(1));
             _attackTimer = 0;
         }
+        //落ちすぎると初期地点に戻す
+        if (transform.position.y < -50)
+            transform.position = _initialPosition;
         _attackTimer += Time.deltaTime;
     }
-    //void OnTriggerEnter(Collider other)
-    //{
-    //    _attackList.Enqueue(other.gameObject);
-    //}
     void OnTriggerStay(Collider other)
     {
         if(other.CompareTag("Enemy"))
@@ -74,16 +75,6 @@ public class PlayerMove : MonoBehaviour
     {
         float timer = 0;
         _attackRange.SetActive(true);
-        for (int i = 0; i < _attackList.Count; ++i)
-        {
-            if (_attackList.TryDequeue(out GameObject result))
-            {
-                if(result.CompareTag("Enemy"))
-                {
-                    Destroy(result.gameObject);
-                }
-            }
-        }
         while (timer < time)
         {
             timer += Time.deltaTime;
