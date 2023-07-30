@@ -6,10 +6,6 @@ public class WalkEnemy : MonoBehaviour
     [SerializeField] GameObject _player;
     //追跡するスピード
     [SerializeField,Range(0,100)] float _enemySpeed = 1;
-    void Strat()
-    {
-        _player = GameObject.FindWithTag("Player");
-    }
     private void FixedUpdate()
     {
         //方向を決める
