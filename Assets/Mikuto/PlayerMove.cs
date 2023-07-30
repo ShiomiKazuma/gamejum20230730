@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class PlayerMove : MonoBehaviour
@@ -64,6 +65,26 @@ public class PlayerMove : MonoBehaviour
         if(other.CompareTag("Enemy"))
         {
             Destroy(other.gameObject);
+        }
+    }
+    //ゲームマネージャー呼び出し
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.CompareTag("Enemy"))
+        {
+            GameManager.Instance.PlayerDamage();
+        }
+    }
+    private void LateUpdate()
+    {
+        // アニメーションを制御する
+        if (_animator)
+        {
+            //X方向のvelocityの絶対値
+            //m_anim.SetFloat("SpeedX", Mathf.Abs(m_rb.velocity.x));
+            //Y方向のvelocity
+            _animator.SetFloat("SpeedY", _rb.velocity.y);
+            _animator.SetBool("IsGrounded", _isGrounded);
         }
     }
     /// <summary>
