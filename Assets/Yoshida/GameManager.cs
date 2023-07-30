@@ -15,6 +15,8 @@ public class GameManager : MonoBehaviour
     /// <summary>ゲームの経過時間ゲッター</summary>
     public float Timer => _timer;
     [SerializeField, Header("スコアの倍率")] float _scoreScale = 10;
+    /// <summary>プレイヤーの最大Hp</summary>
+    [SerializeField] int _playerHp = 10;
 
     /// <summary>ゲームオーバー時に表示されるテキスト</summary>
     [SerializeField] GameObject _gameOverText;
@@ -32,6 +34,9 @@ public class GameManager : MonoBehaviour
     /// <summary>ゲーム経過時間テキスト</summary>
     [SerializeField] Text _timerText;
 
+    /// <summary>エネミー死亡時サウンド</summary>
+    [SerializeField] AudioClip _enemyDead;
+
     public static GameManager Instance;
     private void Awake()
     {
@@ -43,12 +48,6 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-    }
-
-    public enum PlayerState
-    {
-        Dead,
-        Alive,
     }
 
     public enum GameState
@@ -71,6 +70,7 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         _timer += Time.deltaTime;
+        
     }
 
     public void GameStateProcess(GameState state)
@@ -111,6 +111,22 @@ public class GameManager : MonoBehaviour
         _titleButton.SetActive(true);
         Time.timeScale = 0;
         print("GamePaused");
+    }
+
+    public void PlayerDamage()
+    {
+        _playerHp--;
+        if (_playerHp <= 0)
+        {
+            GameStateProcess(GameState.GameOver);
+        }
+    }
+
+    /// <summary>エネミーの死亡時処理</summary>
+    public void EnemyDead()
+    {
+        _enemyKillCount++;
+
     }
 
     /// <summary>スコアを計算するメソッド</summary>
