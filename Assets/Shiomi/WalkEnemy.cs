@@ -19,6 +19,7 @@ public class WalkEnemy : MonoBehaviour
         //³–Ê‚ðŒü‚­
         if(dir.magnitude > 0)
         {
+            dir.y = 0;
             transform.rotation = Quaternion.LookRotation(dir);
         }
     }
