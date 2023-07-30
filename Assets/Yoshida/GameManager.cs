@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
@@ -16,7 +17,11 @@ public class GameManager : MonoBehaviour
     public float Timer => _timer;
     [SerializeField, Header("スコアの倍率")] float _scoreScale = 10;
     /// <summary>プレイヤーの最大Hp</summary>
-    [SerializeField] int _playerHp = 10;
+    [SerializeField] float _playerHp = 10;
+    /// <summary>プレイヤーHp</summary>
+    [SerializeField] Slider _playerHpBar;
+    /// <summary>プレイヤーの現在Hp</summary>
+    float _playerNowHp;
 
     /// <summary>ゲームオーバー時に表示されるテキスト</summary>
     [SerializeField] GameObject _gameOverText;
@@ -36,6 +41,8 @@ public class GameManager : MonoBehaviour
 
     /// <summary>エネミー死亡時サウンド</summary>
     [SerializeField] AudioClip _enemyDead;
+    /// <summary>プレイヤーの死亡時サウンド</summary>
+    [SerializeField] AudioClip _playerDead;
 
     public static GameManager Instance;
     private void Awake()
@@ -62,15 +69,17 @@ public class GameManager : MonoBehaviour
         _gameOverText.SetActive(false);
         _gameClearText.SetActive(false);
         _gamePausedText.SetActive(false);
-        
+
         _titleButton.SetActive(false);
         _reTryButton.SetActive(false);
+
+        _playerHpBar.value = 1;
+        _playerNowHp = _playerHp;
     }
 
     void Update()
     {
         _timer += Time.deltaTime;
-        
     }
 
     public void GameStateProcess(GameState state)
@@ -115,8 +124,9 @@ public class GameManager : MonoBehaviour
 
     public void PlayerDamage()
     {
-        _playerHp--;
-        if (_playerHp <= 0)
+        _playerNowHp--;
+        _playerHpBar.value = _playerNowHp / _playerHp;
+        if (_playerNowHp <= 0)
         {
             GameStateProcess(GameState.GameOver);
         }
