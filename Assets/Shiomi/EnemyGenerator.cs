@@ -8,6 +8,7 @@ public class EnemyGenerator : MonoBehaviour
     [SerializeField, Range(0,10)] float interval = 5.0f;
     //タイマー
     float _timer;
+    [SerializeField] Transform[] _transform;
     private void Start()
     {
         _timer = interval;
@@ -17,7 +18,8 @@ public class EnemyGenerator : MonoBehaviour
         _timer += Time.deltaTime;
         if(_timer >= interval)
         {
-            GameObject enemy = GameObject.Instantiate(_enemyPrefab);
+            int random = Random.Range(0,_transform.Length);
+            GameObject enemy = GameObject.Instantiate(_enemyPrefab, _transform[random].position,transform.rotation);
             _timer = 0;
         }
     }

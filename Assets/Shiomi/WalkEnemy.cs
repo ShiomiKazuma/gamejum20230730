@@ -6,12 +6,15 @@ public class WalkEnemy : MonoBehaviour
     GameObject _player;
     //追跡するスピード
     [SerializeField,Range(0,100)] float _enemySpeed = 1;
+    [SerializeField] float _deathTimer = 10.0f;
+    float _timer;
     private void Start()
     {
         _player = GameObject.FindGameObjectWithTag("Player");
     }
     private void FixedUpdate()
     {
+        _timer += Time.deltaTime;
         //方向を決める
         Vector3 dir = (_player.transform.position - this.transform.position).normalized;
         //移動方向とスピードを決定する
@@ -21,6 +24,11 @@ public class WalkEnemy : MonoBehaviour
         {
             dir.y = 0;
             transform.rotation = Quaternion.LookRotation(dir);
+        }
+
+        if(_deathTimer > _timer)
+        {
+            Destroy(gameObject);
         }
     }
 }
